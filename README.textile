@@ -6,6 +6,7 @@ h2. Highlights
 * Nested Example Groups
 * Shared Example Groups (A.K.A. it_should_behave_like in RSpec )
 * Sandboxed Example Scope
+* Cascading beforeEach, beforeAll, afterEach, afterAll
 * Clean API
 * Easy to extend
 
