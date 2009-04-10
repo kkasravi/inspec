@@ -1,5 +1,14 @@
 **Inspec** is a **Javascript BDD** Test Library that aims to be **flexible** and **powerful** yet **clean** and **easy to extend**. The source is currently working, but is still considered to be in experimental stage. 
 
+h2. Highlights
+
+* Framework independent
+* Nested Example Groups
+* Shared Example Groups (A.K.A. it_should_behave_like in RSpec )
+* Sandboxed Example Scope
+* Clean API
+* Easy to extend
+
 h2. Eample
 
 <pre><code>
