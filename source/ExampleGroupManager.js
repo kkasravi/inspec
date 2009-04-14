@@ -17,7 +17,7 @@ Inspec.ExampleGroupManager = Inspec.Class.extend({
     } else {
       var newNode = new Inspec.util.TreeNode(exampleGroup.getDescription(), exampleGroup);
       this.current.add(newNode);
-      exampleGroup.node = newNode;
+      exampleGroup.setNode(newNode);
       this.initExampleGroup(exampleGroup);
     }
   },
@@ -40,9 +40,9 @@ Inspec.ExampleGroupManager = Inspec.Class.extend({
   initExampleGroup : function(exampleGroup){
     if(!exampleGroup.isConcrete())
       return;
-
+    
     this.current = exampleGroup.node;
-    exampleGroup.implementation();
+    exampleGroup.implementation.call(exampleGroup.defaultScope);
     this.current = exampleGroup.node.getParent();
   },
     

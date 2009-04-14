@@ -31,13 +31,18 @@ Inspec.Environment = Inspec.Class.extend({
     this.exampleGroupManager.prepare();
     this.runner.execute();
   },
-
+  
+  
   load : function(location){
-    var file = this.loadFile(location);
-    var dsl = Inspec.options.dsl || Inspec.dsl.BDD;
-    with(dsl){
-      eval(file);
-    }
+    var specScript = this.preprocess(this.loadFile(location));
+    // using "new Function" approach, so the scope chain is empty
+    var fn = new Function("dsl", specScript);
+    // assigning default scope as the global scope
+    fn.call(Inspec.root, Inspec.options.dsl);
+  },
+  
+  preprocess : function(specScript){
+    return "with (dsl) { " + specScript + " }";
   },
   
   reporterClass : function(){

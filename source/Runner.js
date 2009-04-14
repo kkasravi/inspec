@@ -4,10 +4,6 @@ Inspec.Runner = Inspec.Class.extend({
     this.messenger = messenger;
   },
   
-  currentScope : function(){
-    return {};
-  },
-
   // runs the entire set
   // executes all example groups in order
   execute : function() {
@@ -26,17 +22,17 @@ Inspec.Runner = Inspec.Class.extend({
     {
       var executionError = null;
       this.messenger.send("beginExampleGroup", {exampleGroup : exampleGroup});
-      var scope = {};
+      var scope = exampleGroup.defaultScope;
       try{
-        this.executeBeforeAll(exampleGroup);
+        this.executeBeforeAll(exampleGroup, scope);
       }catch(e){
         executionError = executionError || e;
       }
       
-      this.executeExamples(exampleGroup);
+      this.executeExamples(exampleGroup, scope);
       
       try{
-        this.executeAfterAll(exampleGroup);
+        this.executeAfterAll(exampleGroup, scope);
       }catch(e){
         executionError = executionError || e;
       }
@@ -46,28 +42,28 @@ Inspec.Runner = Inspec.Class.extend({
   },
   
   // runs all examples in this example group
-  executeExamples : function(exampleGroup){
+  executeExamples : function(exampleGroup, scope){
     for(var i=0; i< exampleGroup.examples.length; i++){
-      this.executeExample(exampleGroup.examples[i]);
+      this.executeExample(exampleGroup.examples[i], Inspec.clone(scope));
     }    
   },
   
   // runs before all clauses of all parent and current example groups.
-  // immediate parents are run last     
-  executeBeforeAll : function(exampleGroup){
+  // immediate parents are run last
+  executeBeforeAll : function(exampleGroup, scope){
     var parent = exampleGroup.getParent();
     if(parent){
       this.executeBeforeAll(parent);
     }
     if(typeof exampleGroup.beforeAll == "function")
-      exampleGroup.beforeAll.call(this.currentScope());
+      exampleGroup.beforeAll.call(scope);
   },
 
   // runs after all caluases of all parent and current example groups.
   // current is run first, and then immediate parent is run  
-  executeAfterAll : function(exampleGroup){
+  executeAfterAll : function(exampleGroup, scope){
     if(typeof exampleGroup.afterAll == "function")
-      exampleGroup.afterAll.call(this.currentScope());
+      exampleGroup.afterAll.call(scope);
     var parent = exampleGroup.getParent();
     if(parent){
       this.executeAfterAll(parent);
@@ -76,20 +72,20 @@ Inspec.Runner = Inspec.Class.extend({
 
   // runs before each clauses of all parent and current example groups.
   // immediate parents are run last    
-  executeBeforeEach : function(exampleGroup){
+  executeBeforeEach : function(exampleGroup, scope){
     var parent = exampleGroup.getParent();
     if(parent){
       this.executeBeforeEach(parent);
     }
     if(typeof exampleGroup.beforeEach == "function")
-      exampleGroup.beforeEach.call(this.currentScope());
+      exampleGroup.beforeEach.call(scope);
   },
   
   // runs after each caluases of all parent and current example groups.
   // current is run first, and then immediate parent is run
-  executeAfterEach : function(exampleGroup){
+  executeAfterEach : function(exampleGroup, scope){
     if(typeof exampleGroup.afterEach == "function")
-      exampleGroup.afterEach.call(this.currentScope());
+      exampleGroup.afterEach.call(scope);
     var parent = exampleGroup.getParent();
     if(parent){
       this.executeAfterEach(parent);
@@ -99,18 +95,18 @@ Inspec.Runner = Inspec.Class.extend({
   // executes user specified implementation of this example
   // Returns success or failure
   // exceptions are caught and recorded
-  executeExample : function(example){
+  executeExample : function(example, scope){
     var executionError = null;
     var exampleGroup = example.exampleGroup;
     this.messenger.send("beginExample", {example : example});
     try{
-      this.executeBeforeEach(exampleGroup);
-      this.executeExampleImplementation(example);
+      this.executeBeforeEach(exampleGroup, scope);
+      this.executeExampleImplementation(example, scope);
     }catch(e){
       executionError = executionError || e;
     }
     try{
-      this.executeAfterEach(exampleGroup);
+      this.executeAfterEach(exampleGroup, scope);
     }catch(e){
       executionError = executionError || e;
     }
@@ -121,11 +117,11 @@ Inspec.Runner = Inspec.Class.extend({
   },
   
   // run the implementation of the example group
-  executeExampleImplementation : function(example){
+  executeExampleImplementation : function(example, scope){
     if(!example.implementation){
       throw new Inspec.ExamplePending();
     }
-    example.implementation.call(this.currentScope());
+    example.implementation.call(scope);
   }
 });
 

@@ -30,3 +30,5 @@
 * Implement JScriptEnvironment
 * Implement RihnoEnvironment
 * Add default options
+
+* In a desribe block, outside of it, "this" points to the current ExampleGroup. Should fix it so it points to global

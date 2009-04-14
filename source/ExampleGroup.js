@@ -12,6 +12,7 @@ Inspec.ExampleGroup = Inspec.Class.extend({
     if(shared)
       this.shared = true;
     this.node = null;
+    this.defaultScope = {};
   },
   
   // returns the description of the example group
@@ -28,6 +29,22 @@ Inspec.ExampleGroup = Inspec.Class.extend({
   // returns null if it doesn't belong a TreeNode. e.g. shared example groups
   getNode : function(){
     return this.node;
+  },
+  
+  //sets up the node, and the default scope
+  setNode : function(node){
+    this.node = node;
+    this.initDefaultScope(this);
+  },
+  
+  //recursively sets the scope from it's parents
+  initDefaultScope: function(exampleGroup){
+    var parent = exampleGroup.getParent();
+    
+    if(parent)
+      this.initDefaultScope(parent);
+    
+    this.defaultScope = Inspec.merge(this.defaultScope, exampleGroup.defaultScope);
   },
   
   // returns the parent example group of this example group
