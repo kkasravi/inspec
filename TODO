@@ -1,7 +1,10 @@
 * Better matchers
-* Write README
-* write Documentations
-* Better error messages
 * Implement a better HtmlReporter
 * Implement a better ConsoleReporter
 * Implement JScriptEnvironment
+* More specs
+* Write better README
+* write Documentations
+* Better error messages ( seems hard consider js stack trace is next to useless... )
+
+

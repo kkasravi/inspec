@@ -51,6 +51,10 @@ Inspec.Environment = Inspec.Class.extend({
 	
   loadFile : function(location){
     throw new Inspec.NotImplemented();
+  },
+  
+  log : function(msg){
+    throw new Inspec.NotImplemented();
   }
 });
 

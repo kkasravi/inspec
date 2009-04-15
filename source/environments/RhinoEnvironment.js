@@ -5,5 +5,9 @@ Inspec.RhinoEnvironment = Inspec.Environment.extend({
 	
   loadFile : function(location){
     return readFile(location);
+  },
+
+  log : function(mgs){
+    print(msg);
   }
 });

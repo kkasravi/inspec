@@ -3,6 +3,10 @@ Inspec.Reporter = Inspec.Class.extend({
     this.messenger = messenger;
     this.subscribeMessages();
   },
+  
+  log : function(msg){
+    Inspec.Environment.getInstance().log(msg);
+  },
 
   subscribeMessages : function(){
     this.messenger.on("beginTest", this.onStartTest, this);

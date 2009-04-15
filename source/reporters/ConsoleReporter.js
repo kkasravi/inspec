@@ -1,10 +1,10 @@
 Inspec.ConsoleReporter = Inspec.Reporter.extend({
   onStartTest : function(message){
-    print("Start Test");
+    this.log("Start Test");
   },
   
   onEndTest : function(message){
-    print("End Test");
+    this.log("End Test");
   },
   
   onStartExampleGroup : function(message){
@@ -14,7 +14,7 @@ Inspec.ConsoleReporter = Inspec.Reporter.extend({
   },
   
   onStartExample : function(message){
-     print(this.getDescription(message.example));
+     this.log(this.getDescription(message.example));
   },
   
   onEndExample : function(message){
@@ -22,12 +22,12 @@ Inspec.ConsoleReporter = Inspec.Reporter.extend({
     var success = message.success;
     var error = message.error;
     if(success)
-      print("success");
+      this.log("success");
     else{
       if(error instanceof Inspec.ExpectationFailure){
-        print("Failure : " + error);
+        this.log("Failure : " + error);
       } else if(error instanceof Error){
-        print("Error : " + error);
+        this.log("Error : " + error);
       }
     }
   },

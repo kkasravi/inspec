@@ -16,5 +16,11 @@ Inspec.BrowserEnvironment = Inspec.Environment.extend({
     } else {
       return null;
     }
+  },
+  
+  log : function(msg){
+    //yeah...it's not that nice, but... it works
+    if(console && console.log && typeof console.log == "function")
+      console.log(msg);
   }
 });
