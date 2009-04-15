@@ -1,0 +1,46 @@
+--
+source_directory:     source
+build_directory:      dist
+
+
+builds:
+  source:
+    packer: false
+    suffix: false
+  mini:
+    shrink_vars: true
+    private: true
+
+packages:
+
+  inspec:
+    directory:    source
+    files:
+      - Inspec
+      - Class
+      - util/TreeNode
+      - util/Messenger
+      - dsl/BDD
+      - Example
+      - ExampleGroupManager
+      - ExampleGroup
+      - Runner
+      - reporters/Reporter
+      - reporters/ConsoleReporter
+      - Exceptions
+      - Expectation
+      - matchers/Matcher
+      - matchers/ComparisonMatcher
+      - matchers/EqualityMatcher
+      - matchers/IdentityMatcher
+      - matchers/InclusionMatcher
+      - matchers/InstanceMatcher
+      - matchers/RangeMatcher
+      - matchers/RegexMatcher
+      - matchers/TypeMatcher
+      - environments/Environment
+      - environments/BrowserEnvironment
+      - environments/RhinoEnvironment
+      - options
+      
+

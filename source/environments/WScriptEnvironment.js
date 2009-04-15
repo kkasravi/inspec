@@ -4,7 +4,7 @@ Inspec.WScriptEnvironment = Inspec.Environment.extend({
   },
 	
   loadFile : function(location){
-		var fso = new jsspec.root.ActiveXObject('Scripting.FileSystemObject');
+		var fso = new Inspec.root.ActiveXObject('Scripting.FileSystemObject');
 		var file;
 		try {
 			file = fso.OpenTextFile(location);
@@ -15,7 +15,7 @@ Inspec.WScriptEnvironment = Inspec.Environment.extend({
   }
   
   log : function(msg){
-    jsspec.root.WScript.Echo(msg);
+    Inspec.root.WScript.Echo(msg);
   }
   
 });
