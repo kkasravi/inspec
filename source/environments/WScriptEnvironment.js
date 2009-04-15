@@ -12,7 +12,7 @@ Inspec.WScriptEnvironment = Inspec.Environment.extend({
 		} finally {
 			try {if(file) file.Close();} catch(ignored) {}
 		}
-  }
+  },
   
   log : function(msg){
     Inspec.root.WScript.Echo(msg);
