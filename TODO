@@ -24,11 +24,8 @@
 * Write README
 * write Documentations
 * Better error messages
-* Add Parsers to parse loaded specs before eval (support for better syntax)
 * Implement a better HtmlReporter
 * Implement a ConsoleReporter
 * Implement JScriptEnvironment
 * Implement RihnoEnvironment
 * Add default options
-
-* In a desribe block, outside of it, "this" points to the current ExampleGroup. Should fix it so it points to global
