@@ -985,7 +985,6 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
   },
   
   onEndTest : function(message){
-    console.log("End Test");
   },
   
   onStartExampleGroup : function(message){
@@ -1005,10 +1004,10 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
     
     var result = this.document.createElement('div');
     var title = this.document.createElement('div');
-    title.setAttribute("class", "title");
+    title.className = "title";
     
     var text = this.document.createElement('div');
-    text.setAttribute("class", "description");
+    text.className = "description";
     text.innerHTML = description;
     
     var clear = this.document.createElement('br');
@@ -1016,10 +1015,10 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
 
 
     var status = this.document.createElement('div');
-    status.setAttribute("class", "status");
+    status.className = "status";
 
     if(success){
-      result.setAttribute("class", "example success");
+      result.className = "example success";
       title.appendChild(status);
       title.appendChild(text);
       title.appendChild(clear);
@@ -1027,30 +1026,30 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
     }
     else{
       if(error instanceof Inspec.ExpectationFailure){
-        result.setAttribute("class", "example failure");
+        result.className = "example failure";
         title.appendChild(status);
         title.appendChild(text);
         title.appendChild(clear);
         result.appendChild(title);
         var explanation = this.document.createElement('div');
-        explanation.setAttribute("class", "explanation");
+        explanation.className = "explanation";
         explanation.innerHTML = error.toString();
         result.appendChild(explanation);
       } else if (error instanceof Inspec.ExamplePending){
-        result.setAttribute("class", "example pending");
+        result.className = "example pending";
         title.appendChild(status);
         title.appendChild(text);
         title.appendChild(clear);
         result.appendChild(title);
       } 
       else if(error instanceof Error){
-        result.setAttribute("class", "example error");
+        result.className = "example error";
         title.appendChild(status);
         title.appendChild(text);
         title.appendChild(clear);
         result.appendChild(title);
         var explanation = this.document.createElement('div');
-        explanation.setAttribute("class", "explanation");
+        explanation.className = "explanation";
         explanation.innerHTML = error.toString();
         result.appendChild(explanation);
       }
