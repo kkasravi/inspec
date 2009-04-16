@@ -188,8 +188,7 @@ Inspec.util.TreeNode.prototype ={
 
   // Indicates whether this node has any associated content.
   hasContent : function(){
-    rv = (this.getContent() != null && typeof this.getContent() != "undefined");
-    return rv;
+    return (this.getContent() != null && typeof this.getContent() != "undefined");
   },
   
   // Indicates whether this node has any immediate child nodes.
