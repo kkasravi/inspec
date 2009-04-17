@@ -4,7 +4,7 @@ Inspec.Matchers = {
       to: function(matcher, expected, not) {
         var matched = matcher.match(expected, actual);
         if (not ? matched : !matched) {
-          throw( new Inspec.ExpectationFailure(matcher.failureMessage(expected, actual, not)));
+          throw(new Inspec.ExpectationFailure(matcher.failureMessage(expected, actual, not)));
         }
       },
       
@@ -51,7 +51,7 @@ Inspec.Matchers = {
   
   beEmpty: {
     match: function(expected, actual) {
-      if (actual.length == undefined) throw(actual.toString() + " does not respond to length");
+      if (actual.length == undefined) throw(new Inspec.ExpectationFailure(actual.toString() + " does not respond to length"));
       
       return actual.length == 0;
     },
@@ -63,7 +63,7 @@ Inspec.Matchers = {
 
   haveLength: {
     match: function(expected, actual) {
-      if (actual.length == undefined) throw(actual.toString() + " does not respond to length");
+      if (actual.length == undefined) throw(new Inspec.ExpectationFailure(actual.toString() + " does not respond to length"));
 
       return actual.length == expected;
     },
@@ -111,5 +111,41 @@ Inspec.Matchers = {
     failureMessage: function(expected, actual, not) {
       return 'expected ' + Inspec.util.print(actual) + (not ? ' to not be false' : ' to be false');
     }
+  },
+  
+  beA: {
+    match: function(expected, actual) {
+      return (actual instanceof expected);
+    },
+
+    failureMessage: function(expected, actual, not) {
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not be' : 'to be')  +  ' an instance of ' + Inspec.util.print(expected);
+    }
+  },
+
+  throwError: {
+    match: function(expected, actual) {
+      try{actual()}catch(e){return true;}
+      return false;
+    },
+
+    failureMessage: function(expected, actual, not) {
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : 'to')  +  ' throw error';
+    }
+  },
+  
+  have: {
+    match: function(expected, actual) {
+      for(var i in actual)
+        if(actual[i] == expected)
+          return true;
+      return false;
+    },
+
+    failureMessage: function(expected, actual, not) {
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : 'to')  +  ' have ' + Inspec.util.print(expected);
+    }
   }
 };
+
+Inspec.Matchers.be = Inspec.Matchers.eql = Inspec.Matchers.equal;

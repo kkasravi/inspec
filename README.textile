@@ -72,7 +72,7 @@ h2. What needs to be done
 * Make a better HTML Reporter, that hooks into selective executions
 * Better Documentations
 * Better Error messages on Failure and Exception
-
+* A lot more specs
 
 h2. What I'm considering to do
 

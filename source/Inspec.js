@@ -12,13 +12,12 @@ Inspec.load = function(){
   var files = [];
   while(arguments.length){
     var temp = Array.prototype.shift.call(arguments);
-    if(typeof temp == "array"){
+    if(temp.length && temp.length > 0){
       files = files.concat(temp);
     } else if(typeof temp == "string"){
       files.push(temp);
     }
   }
-
   var env = Inspec.Environment.getInstance();
   for(var i=0; i< files.length; i++){
     env.load(files[i]);
