@@ -20,6 +20,7 @@ packages:
       - Class
       - util/TreeNode
       - util/Messenger
+      - util/Print
       - dsl/BDD
       - Example
       - ExampleGroupManager
@@ -30,15 +31,7 @@ packages:
       - reporters/HtmlReporter
       - Exceptions
       - Expectation
-      - matchers/Matcher
-      - matchers/ComparisonMatcher
-      - matchers/EqualityMatcher
-      - matchers/IdentityMatcher
-      - matchers/InclusionMatcher
-      - matchers/InstanceMatcher
-      - matchers/RangeMatcher
-      - matchers/RegexMatcher
-      - matchers/TypeMatcher
+      - Matchers
       - environments/Environment
       - environments/BrowserEnvironment
       - environments/RhinoEnvironment

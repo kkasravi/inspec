@@ -1,3 +1,4 @@
+/*
 describe("Matchers", function(){
   describe("TypeMatcher", function(){
     it("should work with String", function(){
@@ -93,13 +94,4 @@ describe("Matchers", function(){
     })
   })  
 })
-
-
-
-
-
-
-
-
-
-
+*/
