@@ -70,6 +70,8 @@ Inspec.util.TreeNode.prototype ={
   // Returns the requested node from the set of immediate children by the name
   // of the child node
   get : function(name){
+    if(!name)
+      throw "Node name HAS to be provided";
     var index = this._childrenHash[name];
     return this.getAt(index);
   },
@@ -77,9 +79,9 @@ Inspec.util.TreeNode.prototype ={
   // Returns the requested node from the set of immediate children by the
   // position of the child node
   getAt : function(index){
-    if(index)
-      return this._children[index];
-    return null;
+    if(index==null || typeof index == "undefined")
+      throw "Node index HAS to be provided";
+    return (this._children[index] || null);
   },
   
   // Returns the content of the requested node. Returns null if the requested
