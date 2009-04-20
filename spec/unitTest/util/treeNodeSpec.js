@@ -18,6 +18,28 @@ describe("Inspec.util.TreeNode", function(){
   })
 
   describe("instance methods", function(){
+    beforeEach(function(){
+      this.root = new klass("root", 0);
+      this.firstLevel = [];
+      this.secondLevel = [];
+      var current = this.root;
+      for(var i=0; i< 5; i++){
+        var node = new klass("level1 #" + i, i);
+        current.add(node);
+        this.firstLevel.push(node);
+        
+        var temp = current;
+        current = node;
+        this.secondLevel.push([]);
+        for(var j=0; j<5; j++){
+          var node = new klass("level2 #" + i + ":" + j, j);
+          current.add(node);
+          this.secondLevel[i].push(node);
+        }
+        current = temp;
+      }
+    })
+    
     describe("#constructor", function(){
       it("should create a node", function(){
         var node = new klass("root", [1,2,3])
@@ -43,11 +65,10 @@ describe("Inspec.util.TreeNode", function(){
 
     describe("#add", function(){
       beforeEach(function(){
-        this.parent = new klass("parent", 1)
-        this.child = new klass("child", 2)
-        this.added = this.parent.add(this.child)
+        this.parent = this.root;
+        this.child = this.firstLevel[0];
       })
-
+      
       it("should add child to parent", function(){
         expect(this.parent._children).to(have, this.child)
         expect(this.parent._childrenHash).to(have, 0)
@@ -64,23 +85,19 @@ describe("Inspec.util.TreeNode", function(){
       })
       
       it("should return added child", function(){
-        expect(this.added).to(be, this.child)
+        var node = new klass("new node", 123);
+        var added = this.root.add(node)
+        expect(added).to(be, node)
       })
     })
 
     describe("#breadth", function(){
       it("should return 1 if node is root", function(){
-        var root = new klass("root", [1,2,3])
-        expect(root.breadth()).to(be,1)
+        expect(this.root.breadth()).to(be,1)
       })
       
       it("should return sibling size if node is not root", function(){
-        var root = new klass('root', 1)
-        for(var i=0; i<10; i++){
-          var last = new klass('child'+i, i)
-          root.add(last)
-        }
-        expect(last.breadth()).to(be, 10)
+        expect(this.firstLevel[0].breadth()).to(be, this.firstLevel.length)
       })
     })
 
@@ -111,15 +128,8 @@ describe("Inspec.util.TreeNode", function(){
     })
 
     describe("#get", function(){
-      beforeEach(function(){
-        this.children=[]
-        this.root = new klass("root", "root")
-        for(var i=0; i< 10; i++)
-          this.children.push(this.root.add(new klass("n" + i, i)))
-      })
-      
       it("should get child by name", function(){
-        expect(this.root.get("n5")).to(be, this.children[5])
+        expect(this.root.get("level1 #2")).to(be, this.firstLevel[2])
       })
       
       it("should throw error if no content provided", function(){
@@ -136,15 +146,8 @@ describe("Inspec.util.TreeNode", function(){
     })
 
     describe("#getAt", function(){
-      beforeEach(function(){
-        this.children=[]
-        this.root = new klass("root", "root")
-        for(var i=0; i< 10; i++)
-          this.children.push(this.root.add(new klass("n" + i, i)))
-      })
-    
       it("should get child by position", function(){
-        expect(this.root.getAt(2)).to(be, this.children[2])
+        expect(this.root.getAt(2)).to(be, this.firstLevel[2])
       })
       
       it("should throw error if no content provided", function(){
@@ -153,10 +156,11 @@ describe("Inspec.util.TreeNode", function(){
       
       it("should return null if child not found", function(){
         expect(this.root.getAt(-1)).to(beNull)
+        expect(this.root.getAt(this.firstLevel.length+100)).to(beNull)
       })
       
       it("should get child at position 0", function(){
-        expect(this.root.getAt(2)).to(be, this.children[2])
+        expect(this.root.getAt(0)).to(be, this.firstLevel[0])
       })
     })
 
@@ -198,21 +202,18 @@ describe("Inspec.util.TreeNode", function(){
     
     describe("#getName", function(){
       it("should return name", function(){
-        var node = new klass("root", 88)
-        expect(node.getName()).to(be, "root")
+        expect(this.root.getName()).to(be, "root")
       })
     })
 
     describe("#getParent", function(){
-      beforeEach(function(){
-        this.children=[]
-        this.root = new klass("root", "root")
-        for(var i=0; i< 10; i++)
-          this.children.push(this.root.add(new klass("n" + i, i)))
-      })
-      
       it("should return parent", function(){
-        expect(this.children[0].getParent()).to(be, this.root)
+        var child = this.firstLevel[1]
+        var parent = this.root
+        var grandChild = this.secondLevel[1][2]
+        
+        expect(child.getParent()).to(be, parent)
+        expect(grandChild.getParent()).to(be, child)        
       })
       
       it("should return null if root", function(){
@@ -222,60 +223,154 @@ describe("Inspec.util.TreeNode", function(){
 
 
     describe("#getRoot", function(){
-      beforeEach(function(){
-        this.children=[]
-        this.root = new klass("root", "root")
-        this.currentNode = this.root
-        for(var i=0; i< 10; i++){
-          this.currentNode = this.currentNode.add(new klass("n" + i, i))
-          this.children.push(this.currentNode)
-        }
+      it("should return root from children", function(){
+        for(var i=0; i< this.firstLevel.length; i++)
+          expect(this.firstLevel[i].getRoot()).to(be, this.root)
       })
       
-      it("should return root from children", function(){
-        expect(this.children[8].getRoot()).to(be, this.root)
-        expect(this.children[9].getRoot()).to(be, this.root)
+      it("should return root from grand children", function(){
+        for(var i=0; i< this.firstLevel.length; i++)
+          for(var j=0; j < this.firstLevel[i].length; j++)
+            expect(this.firstLevel[i][j].getRoot()).to(be, this.root)
       })
       
       it("should return itself if root", function(){
         expect(this.root.getRoot()).to(be, this.root)
-      })      
+      })
     })
 
     describe("#hasChildren", function(){
-      it("should work")      
+      it("should return true if node has children", function(){
+        var node = this.root
+        expect(node.hasChildren()).to(be, true)
+      })
+
+      it("should return false if node has children", function(){
+        var node = this.secondLevel[0][0]
+        expect(node.hasChildren()).to(be, false)
+      })
+      
     })
 
     describe("#hasContent", function(){
-      it("should work")
+      it("should return true if node has content", function(){
+        var node = new klass("node", 123)
+        expect(node.hasContent()).to(be, true)
+      })
+      
+      it("should return true if node has no content", function(){
+        var node = new klass("node")
+        expect(node.hasContent()).to(be, false)        
+      })
+
+      it("should return false if content is null", function(){
+        var node = new klass("node", null)
+        expect(node.hasContent()).to(be, false)        
+      })
+      
+      it("should return true if content is 0", function(){
+        var node = new klass("node", 0)
+        expect(node.hasContent()).to(be, true)        
+      })      
     })
 
     describe("#isFirstSibling", function(){
-      it("should work")
+      it("should return true if node is first sibling", function(){
+        var node = this.firstLevel[0]
+        expect(node.isFirstSibling()).to(be, true)
+      })
+
+      it("should return false if node is not first sibling", function(){
+        var node = this.firstLevel[1]
+        expect(node.isFirstSibling()).to(be, false)
+      })
+      
+      it("should return true if root", function(){
+        expect(this.root.isFirstSibling()).to(be, true)
+      })
     })
 
     describe("#isLastSibling", function(){
-      it("should work")
+      it("should return true if node is first sibling", function(){
+        var node = this.firstLevel[this.firstLevel.length -1]
+        expect(node.isLastSibling()).to(be, true)
+      })
+
+      it("should return false if node is not first sibling", function(){
+        var node = this.firstLevel[1]
+        expect(node.isLastSibling()).to(be, false)
+      })
+      
+      it("should return true if root", function(){
+        expect(this.root.isLastSibling()).to(be, true)
+      })
     })
 
     describe("#isLeaf", function(){
-      it("should work")
+      it("should return true if node is leaf", function(){
+        var node = this.secondLevel[0][0]
+        expect(node.isLeaf()).to(be, true)
+      })
+
+      it("should return false if node is not leaf", function(){
+        var node = this.firstLevel[0]
+        expect(node.isLeaf()).to(be, false)
+      })
+      
+      it("should return true if root is leaf", function(){
+        var node = new klass("another root", 0)
+        expect(node.isLeaf()).to(be, true)
+      })
+
+      it("should return false if root is not leaf", function(){
+        expect(this.root.isLeaf()).to(be, false)
+      })
     })
 
     describe("#isOnlyChild", function(){
-      it("should work")
+      it("should return true if node is only child", function(){
+        var node = this.secondLevel[0][0].add(new klass("only child", 1122))
+        expect(node.isOnlyChild()).to(be, true)
+      })
+
+      it("should return false if node is not only child", function(){
+        var node = this.secondLevel[0][0]
+        expect(node.isOnlyChild()).to(be, false)
+      })
+      
+      it("should return true if node is root", function(){
+        expect(this.root.isOnlyChild()).to(be, true)
+      })
     })
 
     describe("#isRoot", function(){
-      it("should work")
+      it("should return true if node is root", function(){
+        expect(this.root.isRoot()).to(be, true)
+      })
+      
+      it("should return false if node is not root", function(){
+        expect(this.firstLevel[0].isRoot()).to(be, false)
+      })
     })
 
     describe("#length", function(){
-      it("should work")
+      it("should return the length of child nodes", function(){
+        expect(this.root.length()).to(be, this.firstLevel.length)
+      })
+      
+      it("should return 0 if node has no children", function(){
+        expect(this.secondLevel[0][0].length()).to(be, 0)
+      })
     })
 
     describe("#position", function(){
-      it("should work")
+      it("should return position of node in parent", function(){
+        expect(this.firstLevel[3].position()).to(be, 3)
+      })
+
+      it("should return -1 of node is root", function(){
+        expect(this.root.position()).to(be, -1)
+      })
     })
 
     describe("#preorderedEach", function(){
@@ -283,7 +378,54 @@ describe("Inspec.util.TreeNode", function(){
     })
 
     describe("#remove", function(){
-      it("should work")
+      var doRemove = function(parent, child){
+        rv = {}
+        rv.parent = parent
+        rv.child = child
+        rv.oldLength = parent._children.length
+        rv.deleted = parent.remove(child)
+        rv.newLength = parent._children.length
+        return rv;
+      }
+      
+      it("should remove child", function(){
+        var child = this.secondLevel[0][0]
+        var parent = this.firstLevel[0]
+        var result = doRemove(parent, child)
+        expect(result.oldLength - result.newLength).to(be, 1)
+      })
+
+      it("should set the parent of the removed node to null", function(){
+        var child = this.secondLevel[0][0]
+        var parent = this.firstLevel[0]
+        var result = doRemove(parent, child)
+        expect(result.child._parent).to(be, null)
+      })
+      
+      it("should return the deleted node", function(){
+        var child = this.secondLevel[0][0]
+        var parent = this.firstLevel[0]
+        var result = doRemove(parent, child)
+        expect(result.deleted).to(be, child)
+      })
+
+      it("should do nothing if the node is not a child of parent", function(){
+        var child = this.secondLevel[1][0]
+        var parent = this.firstLevel[0]
+        var result = doRemove(parent, child)
+        
+        expect(result.oldLength).to(be, result.newLength)
+      })
+
+      it("should do nothing if the node is undefined", function(){
+        var child = null
+        var parent = this.firstLevel[0]
+        var result = doRemove(parent, child)
+        
+        expect(result.oldLength).to(be, result.newLength)
+      })
+
+
     })
 
     describe("#removeAll", function(){

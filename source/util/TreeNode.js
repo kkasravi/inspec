@@ -40,7 +40,7 @@ Inspec.util.TreeNode.prototype ={
   //
   // Returns the child node.
   remove : function(child){
-    if(child){
+    if(child && child.getParent() == this){
       var index = this._childrenHash[child.getName()];
       this._children.splice(index, 1);
       delete this._childrenHash[child.getName()];
@@ -222,6 +222,7 @@ Inspec.util.TreeNode.prototype ={
   
   // Returns true if this node is the only child of its parent
   isOnlyChild : function(){
+    if(this.isRoot()) return true; 
     return (this.getParent()._children.length == 1);
   },
     
