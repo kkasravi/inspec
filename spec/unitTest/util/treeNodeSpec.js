@@ -100,32 +100,137 @@ describe("Inspec.util.TreeNode", function(){
         expect(this.firstLevel[0].breadth()).to(be, this.firstLevel.length)
       })
     })
+    
+    describe("#each", function(){
+      it("should be alias of #preorderedEach", function(){
+        expect(klass.prototype.preorderedEach).to(eql, klass.prototype.each)
+      })
+    })
 
-    describe("#breathEach", function(){
-      it("should work")
-
+    describe("#preorderedEach", function(){
+      it("should traverse tree in preordered order", function(){
+        var ary = []
+        var nodeList = [this.root]
+        for(var i=0; i< this.firstLevel.length; i++){
+          nodeList.push(this.firstLevel[i])
+          for(var j=0; j < this.secondLevel[i].length; j++){
+            nodeList.push(this.secondLevel[i][j])
+          }
+        }
+        
+        this.root.preorderedEach(function(node){
+          this.push(node)
+        }, ary)
+        expect(ary).to(eql, nodeList)
+      })
+    })
+    
+    describe("#breadthEach", function(){
+      it("should traverse tree in breadth order", function(){
+        var ary = []
+        var nodeList = [this.root].concat(this.firstLevel)
+        for(var i=0; i< this.firstLevel.length; i++)
+          nodeList = nodeList.concat(this.secondLevel[i])
+          
+        this.root.breadthEach(function(node){
+          this.push(node)
+        }, ary)
+        expect(ary).to(eql, nodeList)
+      })
     })
 
     describe("#depth", function(){
-      it("should work")
-
-    })
-
-    describe("#each", function(){
-      it("should work")
+      beforeEach(function(){
+        this.leaf = this.secondLevel[0][0].add(new klass("single", 0))
+      })
+      
+      it("should return depth of tree", function(){
+        expect(this.root.depth()).to(be, 4)
+      })
+      
+      it("should return depth from current node", function(){
+        expect(this.secondLevel[0][0].depth()).to(be, 2)
+      })
+      
+      it("should return 1 if node is a single leaf", function(){
+        expect(this.leaf.depth()).to(be, 1)
+      })
     })
 
     describe("#eachChild", function(){
-      it("should work")
+      it("should traverse each child in order", function(){
+        var ary = []
+        this.root.eachChild(function(node){
+          this.push(node)
+        }, ary)
+        expect(ary).to(eql, this.firstLevel)
+      })
     })
 
     describe("#eachLeaf", function(){
-      it("should work")
+      it("should traverse each leaf in order", function(){
+        var ary = []
+        var nodeList = []
+        nodeList.push(this.secondLevel[0][0].add(new klass("single", 0)))
+
+        for(var i=0; i< this.firstLevel.length; i++){
+          for(var j=0; j < this.secondLevel[i].length; j++){
+            // this.secondLevel[0][0] has a child now,
+            // so it is no longer a leaf
+            // of we skip adding it
+            if(!(i == 0 && j == 0))
+              nodeList.push(this.secondLevel[i][j])
+          }
+        }
+        
+        this.root.eachLeaf(function(node){
+          this.push(node)
+        }, ary)
+        
+        expect(ary).to(eql, nodeList)
+      })
     })
 
     describe("#eachSibling", function(){
-      it("should work")
+      it("should traverse each sibling in order", function(){
+        var node = this.firstLevel[3]
+        var ary = []
+        var nodeList = []
+        
+        for(var i=0; i< this.firstLevel.length; i++)
+          if(this.firstLevel[i] != node)
+            nodeList.push(this.firstLevel[i])
+
+        node.eachSibling(function(node){
+          this.push(node)
+        }, ary)
+
+        expect(ary).to(eql, nodeList)
+      })
+      
+      it("should do nothing if node is root", function(){
+        var ary = []
+        this.root.eachSibling(function(node){
+          this.push(node)
+        }, ary)
+        
+        expect(ary).to(beEmpty)
+      })
+      
+      it("should do nothing if node has no siblings", function(){
+        var singleChild = this.secondLevel[0][0].add(new klass("single child", 0))
+        var ary = []
+        
+        singleChild.eachSibling(function(node){
+          this.push(node)
+        }, ary)
+        
+        expect(ary).to(beEmpty)
+      })
+      
     })
+    
+
 
     describe("#get", function(){
       it("should get child by name", function(){
@@ -142,7 +247,18 @@ describe("Inspec.util.TreeNode", function(){
     })
 
     describe("#getAllParents", function(){
-      it("should work")
+      beforeEach(function(){
+        this.node = this.secondLevel[0][0]
+        this.parentsList = [this.firstLevel[0], this.root]
+      })
+      
+      it("should get all parents", function(){
+        expect(this.node.getAllParents()).to(be, this.parentsList)
+      })
+      
+      it("should return null if root", function(){
+        expect(this.root.getAllParents()).to(beNull)
+      })
     })
 
     describe("#getAt", function(){
@@ -177,27 +293,73 @@ describe("Inspec.util.TreeNode", function(){
     })
 
     describe("#getFirstChild", function(){
-      it("should work")
+      it("should return first child", function(){
+        expect(this.root.getFirstChild()).to(be, this.firstLevel[0])
+      })
+      
+      it("should return null if no children", function(){
+        expect(this.secondLevel[0][0].getFirstChild()).to(be, null)
+      })      
     })
 
     describe("#getFirstSibling", function(){
-      it("should work")
+      it("should return first sibling", function(){
+        for(var i=1; i< this.firstLevel.length; i++)
+          expect(this.firstLevel[i].getFirstSibling()).to(be, this.firstLevel[0])
+      })
+      
+      it("should return self if no other siblings", function(){
+        expect(this.root.getFirstSibling()).to(be, this.root)
+      })
     })
 
     describe("#getLastChild", function(){
-      it("should work")
+      it("should return last child", function(){
+        expect(this.root.getLastChild()).to(be, this.firstLevel[this.firstLevel.length - 1])
+      })
+      
+      it("should return null if no children", function(){
+        expect(this.secondLevel[0][0].getLastChild()).to(be, null)
+      })
     })
 
     describe("#getLastSibling", function(){
-      it("should work")
+      it("should return last sibling", function(){
+        for(var i=1; i< this.firstLevel.length; i++)
+          expect(this.firstLevel[i].getLastSibling()).to(be, this.firstLevel[this.firstLevel.length - 1])
+      })
+      
+      it("should return self if no other siblings", function(){
+        expect(this.root.getLastSibling()).to(be, this.root)
+      })
     })
     
     describe("#getNextSibling", function(){
-      it("should work")
+      it("should return next sibling", function(){
+          expect(this.firstLevel[2].getNextSibling()).to(be, this.firstLevel[3])
+      })
+      
+      it("should return null if no other siblings", function(){
+        expect(this.root.getNextSibling()).to(be, null)
+      })
+      
+      it("should return null if node is the last sibling", function(){
+        expect(this.firstLevel[this.firstLevel.length - 1].getNextSibling()).to(be, null)
+      })      
     })
 
     describe("#getPreviousSibling", function(){
-      it("should work")
+      it("should return next sibling", function(){
+          expect(this.firstLevel[2].getPreviousSibling()).to(be, this.firstLevel[1])
+      })
+      
+      it("should return null if no other siblings", function(){
+        expect(this.root.getPreviousSibling()).to(be, null)
+      })
+      
+      it("should return null if node is the first sibling", function(){
+        expect(this.firstLevel[0].getPreviousSibling()).to(be, null)
+      })
     })
     
     describe("#getName", function(){
@@ -373,10 +535,6 @@ describe("Inspec.util.TreeNode", function(){
       })
     })
 
-    describe("#preorderedEach", function(){
-      it("should work")
-    })
-
     describe("#remove", function(){
       var doRemove = function(parent, child){
         rv = {}
@@ -424,32 +582,61 @@ describe("Inspec.util.TreeNode", function(){
         
         expect(result.oldLength).to(be, result.newLength)
       })
-
-
     })
 
     describe("#removeAll", function(){
-      it("should work")
+      beforeEach(function(){
+        this.root.removeAll()
+      })
+      
+      it("should empty _children array", function(){
+        expect(this.root._children).to(beEmpty)
+      })
+      
+      it("should empty _childrenHash object", function(){
+        expect(this.root._childrenHash).to(be, {})        
+      })
+      
+      it("should set _parent to null for all child nodes", function(){
+        for(var i=0; i< this.firstLevel.length; i++)
+          expect(this.firstLevel[i]._parent).to(beNull)
+      })      
     })
 
     describe("#removeFromParent", function(){
-      it("should work")
-    })
-
-    describe("#setAsRoot", function(){
-      it("should work")
+      beforeEach(function(){
+        this.parent = this.root;
+        this.node = this.firstLevel[0];
+        expect(this.parent._children).to(have, this.node)
+        this.node.removeFromParent();
+      })
+      
+      it("should remove child node from parent", function(){
+        expect(this.parent._children).toNot(have, this.node)
+        expect(this.parent._childrenHash[this.node._name]).to(beUndefined)
+      })
+      
+      it("should set _parent of child node to null", function(){
+        expect(this.node._parent).to(beNull)
+      })
+      
+      it("should not throw error if operate on root", function(){
+        var root = this.root;
+        expect(function(){root.removeFromParent()}).toNot(throwError)
+      })
     })
 
     describe("#setContent", function(){
-      it("should work")
-    })
-
-    describe("#setParent", function(){
-      it("should work")
+      it("should set content for a node", function(){
+        this.root.setContent(1234)
+        expect(this.root._content).to(be, 1234)
+      })
     })
 
     describe("#size", function(){
-      it("should work")
+      it("should be alias of #length", function(){
+        expect(klass.prototype.length).to(be, klass.prototype.size)
+      })
     })
   })
 })

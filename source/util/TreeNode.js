@@ -59,7 +59,7 @@ Inspec.util.TreeNode.prototype ={
   
   // Removes all children from the receiver node.
   removeAll : function(){
-    this.eachChildren(function(child){
+    this.eachChild(function(child){
       child.setAsRoot();
     }, this);
 
@@ -249,9 +249,7 @@ Inspec.util.TreeNode.prototype ={
   },
 
   
-  each : function(fn, scope){
-    this.preorderedEach(fn, scope);
-  },
+
 
   // Returns every node (including the receiver node) from the tree to the
   // specified block. The traversal is depth first and from left to right in
@@ -270,7 +268,7 @@ Inspec.util.TreeNode.prototype ={
     
     // Use a queue to do breadth traversal
     while(nodeQueue.length > 0){
-      var nodeToTraverse = nodeQueue.shift
+      var nodeToTraverse = nodeQueue.shift()
       fn.call(scope, nodeToTraverse);
       // Enqueue the children from left to right.
       nodeToTraverse.eachChild(function(child){
@@ -291,13 +289,8 @@ Inspec.util.TreeNode.prototype ={
   
   // Returns the total number of nodes in this tree, rooted at the receiver
   // node.
-  size : function(){
-    return this._children.length;
-  },
-  
-  // @see #size
   length : function(){
-    return this.size();
+    return this._children.length;
   },
 
   // Returns depth of the tree from this node. A single leaf node has a
@@ -306,12 +299,12 @@ Inspec.util.TreeNode.prototype ={
     var depth = 1;
     if(!this.isLeaf()){
       var ary = [];
-      this.eachChildren(function(child){
+      this.eachChild(function(child){
         ary.push(child.depth());
       }, this);
-      deapth += Inspec.util.TreeNode.max(ary);
+      depth += Inspec.util.TreeNode.max(ary);
     }
-    return depath;
+    return depth;
   },
   
   // Returns breadth of the tree at this node level. A single node has a
@@ -335,3 +328,6 @@ Inspec.util.TreeNode.prototype ={
   }
 }
 
+// @see #size
+Inspec.util.TreeNode.prototype.size = Inspec.util.TreeNode.prototype.length;
+Inspec.util.TreeNode.prototype.each = Inspec.util.TreeNode.prototype.preorderedEach;
