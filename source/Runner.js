@@ -53,7 +53,7 @@ Inspec.Runner = Inspec.Class.extend({
   executeBeforeAll : function(exampleGroup, scope){
     var parent = exampleGroup.getParent();
     if(parent){
-      this.executeBeforeAll(parent);
+      this.executeBeforeAll(parent, scope);
     }
     if(typeof exampleGroup.beforeAll == "function")
       exampleGroup.beforeAll.call(scope);
@@ -66,7 +66,7 @@ Inspec.Runner = Inspec.Class.extend({
       exampleGroup.afterAll.call(scope);
     var parent = exampleGroup.getParent();
     if(parent){
-      this.executeAfterAll(parent);
+      this.executeAfterAll(parent, scope);
     }
   },
 
@@ -75,7 +75,7 @@ Inspec.Runner = Inspec.Class.extend({
   executeBeforeEach : function(exampleGroup, scope){
     var parent = exampleGroup.getParent();
     if(parent){
-      this.executeBeforeEach(parent);
+      this.executeBeforeEach(parent, scope);
     }
     if(typeof exampleGroup.beforeEach == "function")
       exampleGroup.beforeEach.call(scope);
@@ -88,7 +88,7 @@ Inspec.Runner = Inspec.Class.extend({
       exampleGroup.afterEach.call(scope);
     var parent = exampleGroup.getParent();
     if(parent){
-      this.executeAfterEach(parent);
+      this.executeAfterEach(parent, scope);
     }
   },
   
