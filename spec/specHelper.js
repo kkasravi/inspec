@@ -6,8 +6,9 @@
     "unitTest/exampleSpec.js",
     "unitTest/exceptionsSepc.js",
     "unitTest/expectationSpec.js",
-    "unitTest/inspecSepc.js",
-    "unitTest/matchersSepc.js",
+    "unitTest/inspecSepc.js",    
+    "unitTest/matchers/sharedMatcherSpec.js",
+    "unitTest/matchers/equalMatcherSpec.js",
     "unitTest/runerSpec.js",
     "unitTest/dsl/bddSpec.js",
     "unitTest/util/treeNodeSpec.js",
@@ -25,7 +26,7 @@
   var integrationSpecs = [
     "integration/behaviorSepc.js"
   ];
-  console.log(Inspec);
+
   Inspec
     .load(unitTestSpecs, integrationSpecs)
     .run();  

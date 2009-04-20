@@ -119,7 +119,7 @@ Inspec.Matchers = {
     },
 
     failureMessage: function(expected, actual, not) {
-      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not be' : 'to be')  +  ' an instance of ' + Inspec.util.print(expected);
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not be' : ' to be')  +  ' an instance of ' + Inspec.util.print(expected);
     }
   },
 
@@ -130,8 +130,18 @@ Inspec.Matchers = {
     },
 
     failureMessage: function(expected, actual, not) {
-      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : 'to')  +  ' throw error';
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : ' to')  +  ' throw error';
     }
+  },
+  
+  respondTo: {
+    match: function(expected, actual) {
+      return actual[expected] && typeof actual[expected] == "function";
+    },
+
+    failureMessage: function(expected, actual, not) {
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : ' to')  +  ' respond to ' + Inspec.util.print(expected);
+    }    
   },
   
   have: {
@@ -143,7 +153,7 @@ Inspec.Matchers = {
     },
 
     failureMessage: function(expected, actual, not) {
-      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : 'to')  +  ' have ' + Inspec.util.print(expected);
+      return 'expected ' + Inspec.util.print(actual) + (not ? ' to not' : ' to')  +  ' have ' + Inspec.util.print(expected);
     }
   }
 };
