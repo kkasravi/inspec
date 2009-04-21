@@ -1,10 +1,211 @@
-* Better matchers
+Low priority
 * Implement a better HtmlReporter
 * Implement a better ConsoleReporter
-* Implement JScriptEnvironment
 * More specs
 * Write better README
 * write Documentations
 * Better error messages ( seems hard consider js stack trace is next to useless... )
 
 
+High priority
+* support multiple definition of before / after blocks (add array)
+* support multiple definition of same behaviors (see below)
+* redo shared example groups
+  * if not found throw error
+  * should solifiy immediately
+  * should not create a new behavior
+  * when solidify, should add before / after blocks to parent behavior
+  * when solidify, should add examples to parent behavior
+  * when solidify, should add behaviors to parent behavior
+
+describe(abc, function(){
+  //impl 1
+  describe(efg, function(){ //impl 3  })
+  
+  describe(bla, function(){ // impl 4 })
+
+})
+
+describe(abc, function(){
+  //impl 2
+  describe(foo, function(){ //impl 5  })
+  
+  describe(efg, function(){ // impl 6 })
+
+})
+
+
+                            Implementation Tree (root)
+                                   |
+                                   |
+                                   |
+                    ------------------------------------------
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                   (abc)  impl 1                            (abc) impl 2
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                    |                                        |
+                    |                                        |
+            -------------------                        ------------------
+            |                 |                        |                |
+            |                 |                        |                |
+            |                 |                        |                |
+            |                 |                        |                |
+            |                 |                        |                |
+          (efg)              (bla)                    (foo)            (efg)
+          impl 3              impl 4                   impl 5           impl 6
+          
+          
+          
+          
+                              Behavior Tree (root)
+                                   |
+                                   |
+                                   |
+                                  abc : [impl 1, impl2]
+                                   |
+                ------------------------------------------
+                |                  |                     |
+                |                  |                     |
+                |                  |                     |
+                |                  |                     |
+                |                  |                     |
+                |                  |                     |
+               efg                bla                   foo
+        [impl 3, impl 6]       [impl  4]                [impl 5]
+          
+
+behavior (a behavior is a description, and many implemenations)
+abc -----> [impl 1,  impl 2]
+efg -----> [impl 3,  impl 6]
+bla -----> [impl 4]
+foo -----> [impl 5]
+
+implementation (an implementation has the 'implemenation' function, examples, and points back to behavior)
+impl 1 ---> abc, impl 2 ---> abc
+impl 3 ---> efg, impl 4 ---> bla
+impl 5 ---> foo, impl 6 ---> efg
+
+
+implementation tree ( before / after blocks and scopes can be used here )
+impl 1 ------> [impl 3, impl 4]
+impl 2 ------> [impl 5, impl 6]
+
+
+behavior tree ( runner uses this)
+abc ---> [efg, bla, foo]
+
+
+abc
+  efg
+  bla
+  foo
+  efg
+
+manager:
+
+set current behavior and current implementation as root
+
+lookup if behavior 'abc' is a child of current behavior
+nope, create a new behavior 'abc'
+add 'abc' to current behavior
+create new implementation - impl 1
+add impl 1 to 'abc'
+add impl 1 to current implementation
+set current behavior and current implementation as 'abc' and impl 1
+run impl 1
+ |
+ |
+ --->   lookup if behavior 'efg' is a child of current behavior ('abc')
+        nope, create a new behavior 'efg'
+        add 'efg' to current behavior ('abc')
+        create new implementation - impl 3
+        add impl 3 to 'efg'
+        add impl 3 to current implementation (impl 1)
+        set current behavior and current implementation as 'efg' and impl 3
+        run impl 3 --> nothing
+        set current behavior and current implementation as 'abc' and impl 1
+        
+        lookup if behavior 'bla' is a child of current behavior ('abc')
+        nope, create a new behavior 'bla'
+        add 'bla' to current behavior ('abc')
+        create new implementation - impl 4
+        add impl 4 to 'bla'
+        add impl 4 to current implementation (impl 1)
+        set current behavior and current implementation as 'bla' and impl 4
+        run impl 4
+        set current behavior and current implementation as 'abc' and impl 1
+(impl 1 finishes)
+set current behavior and current implementation as root
+
+lookup if behavior 'abc' is a child of current behavior
+yeah, fetch behavior 'abc'
+create new implementation - impl 2
+add impl 2 to 'abc'
+add impl 2 to current implementation
+set current behavior and current implementation as 'abc' and impl 2
+run impl 2
+ |
+ |
+ |
+ --->   lookup if behavior 'foo' is a child of current behavior ('abc')
+        nope, create a new behavior 'foo'
+        add 'foo' to current behavior ('abc')
+        create new implementation - impl 5
+        add impl 5 to 'foo'
+        add impl 5 to current implementation (impl 2)
+        set current behavior and current implementation as 'foo' and impl 5
+        run impl 5 --> nothing
+        set current behavior and current implementation as 'abc' and impl 2
+        
+        lookup if behavior 'efg' is a child of current behavior ('abc')
+        yeah, fetch behavior 'efg'
+        create new implementation - impl 6
+        add impl 6 to 'efg'
+        add impl 6 to current implementation (impl 2)
+        set current behavior and current implementation as 'efg' and impl 6
+        run impl 6  -->nothing
+        set current behavior and current implementation as 'abc' and impl 2
+(impl 2 finishes)
+set current behavior and current implementation as root      
+
+
+Runner : 
+
+For each behavior that is a child of behavior tree root
+  run behavior ('abc')
+    |
+    |
+    ----> Run all Implementations
+            Run Impl 1
+              Run Examples
+              Run all child implementaiton if child
+                  Run Impl 3
+                    Run Examples
+                    Run all child implementaiton if child
+                  Run Impl 4
+                    Run Examples
+                    Run all child implementaiton if child    
+            Run Impl 2
+              Run Examples
+              Run all child implementaiton if child
+                  Run Impl 5
+                    Run Examples
+                    Run all child implementaiton if child
+                  Run Impl 6
+                    Run Examples
+                    Run all child implementaiton if child    
+                                          
+run examples in impl 1
+run examples in impl 3
+run examples in impl 4
+run examples in impl 2
+run examples in impl 5
+run examples in impl 6
