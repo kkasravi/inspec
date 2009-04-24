@@ -1,6 +1,7 @@
 Inspec.Runner = Inspec.Class.extend({
-  init : function(root, messenger){
-    this.root = root;
+  init : function(behaviorRoot, exampleGroupRoot, messenger){
+    this.behaviorRoot = behaviorRoot;
+    this.exampleGroupRoot = exampleGroupRoot;
     this.messenger = messenger;
   },
   
@@ -8,14 +9,29 @@ Inspec.Runner = Inspec.Class.extend({
   // executes all example groups in order
   execute : function() {
     this.messenger.send("beginTest");
-    this.root.each(function(node){
-      var exampleGroup = node.getContent();
-      if(exampleGroup)
-        this.executeExampleGroup(exampleGroup);
+    this.behaviorRoot.eachChild(function(behavior){
+      if(behavior)
+        this.executeBehavior(behavior);
     }, this);
     this.messenger.send("endTest");
   },
   
+  executeBehavior : function(behavior){
+    var exampleGroups = behavior.getExampleGroups();
+    for(var i=0; i< exampleGroups.length; i++){
+      var exampleGroup = exampleGroups[i];
+      this.executeExampleGroupTree(exampleGroup);
+    }
+  },
+  
+  executeExampleGroupTree : function(exampleGroup){
+    this.executeExampleGroup(exampleGroup);
+    exampleGroup.eachChild(function(child){
+      if(child){
+        this.executeExampleGroupTree(child);
+      }
+    }, this);
+  },
   // executes the specified example group
   executeExampleGroup : function(exampleGroup){
     if(exampleGroup.hasExamples())
@@ -55,15 +71,18 @@ Inspec.Runner = Inspec.Class.extend({
     if(parent){
       this.executeBeforeAll(parent, scope);
     }
-    if(typeof exampleGroup.beforeAll == "function")
-      exampleGroup.beforeAll.call(scope);
+        
+    for(var i=0; i< exampleGroup.before.all.length; i++){
+      exampleGroup.before.all[i].call(scope);
+    }
   },
 
   // runs after all caluases of all parent and current example groups.
   // current is run first, and then immediate parent is run  
   executeAfterAll : function(exampleGroup, scope){
-    if(typeof exampleGroup.afterAll == "function")
-      exampleGroup.afterAll.call(scope);
+    for(var i=0; i< exampleGroup.after.all.length; i++){
+      exampleGroup.after.all[i].call(scope);
+    }
     var parent = exampleGroup.getParent();
     if(parent){
       this.executeAfterAll(parent, scope);
@@ -77,15 +96,17 @@ Inspec.Runner = Inspec.Class.extend({
     if(parent){
       this.executeBeforeEach(parent, scope);
     }
-    if(typeof exampleGroup.beforeEach == "function")
-      exampleGroup.beforeEach.call(scope);
+    for(var i=0; i< exampleGroup.before.each.length; i++){
+      exampleGroup.before.each[i].call(scope);
+    }
   },
   
   // runs after each caluases of all parent and current example groups.
   // current is run first, and then immediate parent is run
   executeAfterEach : function(exampleGroup, scope){
-    if(typeof exampleGroup.afterEach == "function")
-      exampleGroup.afterEach.call(scope);
+    for(var i=0; i< exampleGroup.after.each.length; i++){
+      exampleGroup.after.each[i].call(scope);
+    }
     var parent = exampleGroup.getParent();
     if(parent){
       this.executeAfterEach(parent, scope);

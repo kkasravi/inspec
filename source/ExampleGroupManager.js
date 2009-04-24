@@ -1,9 +1,11 @@
 Inspec.ExampleGroupManager = Inspec.Class.extend({
   // creates an exmaple group manager
   init : function(){
-    this.shared = {}
-    this.root = new Inspec.util.TreeNode('root');
-    this.current = this.root;
+    this.sharedExampleGroups = {};
+    this.behaviorRoot = new Inspec.Behavior('root');
+    this.exampleGroupRoot = new Inspec.ExampleGroup('root');
+    this.currentBehavior = this.behaviorRoot;
+    this.currentExampleGroup = this.exampleGroupRoot;
   },
   
   // Add an example group to shared for later use if the example group is
@@ -11,26 +13,49 @@ Inspec.ExampleGroupManager = Inspec.Class.extend({
   // added example group is concrete, we initialize it. If the added example
   // group is not concrete, it will later be solidified using a shared example
   // group.
-  add : function(exampleGroup){
+  add : function(description, exampleGroup){
     if(exampleGroup.isShared()){
-      this.shared[exampleGroup.getDescription()] = exampleGroup;
+      this.sharedExampleGroups[description] = exampleGroup;
     } else {
-      var newNode = new Inspec.util.TreeNode(exampleGroup.getDescription(), exampleGroup);
-      this.current.add(newNode);
-      exampleGroup.setNode(newNode);
+      var behavior = this.findOrCreateBehavior(description);
+      behavior.addExampleGroup(exampleGroup);
+      this.currentExampleGroup.add(exampleGroup);
       this.initExampleGroup(exampleGroup);
     }
   },
   
-  // solidifies a non-concrete example group using a shared example group.
-  solidifySharedExampleGroup : function(exampleGroup){
-    // do nothing if it is concrete
-    if(exampleGroup.isConcrete())
-      return;
+  findOrCreateBehavior : function(description){
+    return (this.currentBehavior.get(description) || this.currentBehavior.add(new Inspec.Behavior(description)));
+  },
+  
+  // Todo: refactor!!!
+  solidify : function(implementation){
+    var str = implementation.toString().match(/^[^\{]*{((.*\n*)*)}/m)[1];
+    var regex = /itShouldBehaveLike\s*[(]\s*(?:['"])(.*?)(?:['"])\s*[)]\s*;*/m;
     
-    var sharedExampleGroup = this.shared[exampleGroup.getDescription()];
-    exampleGroup.implementation = sharedExampleGroup.implementation;
-    this.initExampleGroup(exampleGroup);
+    if(!regex.test(str)) return implementation;
+
+    var results = null;
+    
+    while(results = regex.exec(str)){
+      var sharedExampleGroup = this.sharedExampleGroups[results[1]];
+      if(!sharedExampleGroup)
+        throw new Error("Shared Behavior: '" + results[1] + "' not found! Did you include it before this script?");
+
+      var subStr = sharedExampleGroup.getImplementation().toString();
+      var contents = subStr.match(/^[^\{]*{((.*\n*)*)}/m)[1];
+      str = str.replace(results[0], contents);
+    }
+    str = "with (dsl){ with(matchers) { " + str + " } }";
+    // using "new Function" approach, so the scope chain is empty
+    var fn = new Function("dsl", "matchers", str);
+    // assigning default scope as the global scope
+    
+    implementation = function(){
+      fn.call(this, Inspec.options.dsl, Inspec.Matchers);
+    };
+        
+    return implementation;
   },
   
   // initializes an example group. Do nothing if the example group is not
@@ -41,17 +66,12 @@ Inspec.ExampleGroupManager = Inspec.Class.extend({
     if(!exampleGroup.isConcrete())
       return;
     
-    this.current = exampleGroup.node;
-    exampleGroup.implementation.call(exampleGroup.defaultScope);
-    this.current = exampleGroup.node.getParent();
-  },
-    
-  // iterate through all example groups, and solidify exmaple groups
-  prepare : function() {
-    this.root.each(function(node){
-      if(node.hasContent() && (!node.getContent().isConcrete()))
-        this.solidifySharedExampleGroup(node.getContent());
-    }, this);   
+    this.currentBehavior = exampleGroup.getBehavior();
+    this.currentExampleGroup = exampleGroup;
+    exampleGroup.setImplementation(this.solidify(exampleGroup.getImplementation()));
+    exampleGroup.getImplementation().call(exampleGroup.defaultScope);
+    this.currentBehavior = exampleGroup.getBehavior().getParent();
+    this.currentExampleGroup = exampleGroup.getParent();
   },
   
   // returns the current example group

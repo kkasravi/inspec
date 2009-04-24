@@ -24,7 +24,7 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
     var example = message.example;
     var success = message.success;
     var error = message.error;
-    var description = this.getDescription(message.example);
+    var description = this.getDescription(example);
     
     var result = this.document.createElement('div');
     var title = this.document.createElement('div');
@@ -84,7 +84,10 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
   
   getExampleGroupDescription : function(exampleGroup){
     var parent = exampleGroup.getParent();
-    var description = exampleGroup.getDescription();
+    var behavior = exampleGroup.getBehavior();
+    
+    var description = behavior ? behavior.getDescription() : "";
+    
     if(parent)
       description = this.getExampleGroupDescription(parent) + " " + description;
     return description;

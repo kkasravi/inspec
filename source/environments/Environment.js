@@ -8,7 +8,7 @@ Inspec.Environment = Inspec.Class.extend({
     this.exampleGroupManager = new Inspec.ExampleGroupManager();
     var reporter = this.reporterClass();
     this.reporter = new reporter(this.messenger);
-    this.runner = new Inspec.Runner(this.exampleGroupManager.root, this.messenger);
+    this.runner = new Inspec.Runner(this.exampleGroupManager.behaviorRoot, this.exampleGroupManager.exampleGroupRoot, this.messenger);
   },
   
   getExampleGroupManager : function(){
@@ -28,7 +28,6 @@ Inspec.Environment = Inspec.Class.extend({
   },
   
   run : function(){
-    this.exampleGroupManager.prepare();
     this.runner.execute();
   },
   
