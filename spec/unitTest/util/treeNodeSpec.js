@@ -46,8 +46,12 @@ describe("Inspec.util.TreeNode", function(){
         expect(node).to(beA, klass)
       })
 
-      it("should not create a node with name ", function(){
+      it("should not create a node without name ", function(){
         expect(function(){new klass(null, [1,2,3])}).to(throwError)
+      })
+      
+      it("should not create a node with name as 0", function(){
+        expect(function(){new klass(0, [1,2,3])}).toNot(throwError)
       })
       
       it("should initialize all variables", function(){
@@ -237,8 +241,8 @@ describe("Inspec.util.TreeNode", function(){
         expect(this.root.get("level1 #2")).to(be, this.firstLevel[2])
       })
       
-      it("should throw error if no content provided", function(){
-        expect(function(){this.root.get()}).to(throwError)
+      it("should return null if no content provided", function(){
+        expect(this.root.get()).to(beNull)
       })
       
       it("should return null if child not found", function(){
@@ -266,8 +270,8 @@ describe("Inspec.util.TreeNode", function(){
         expect(this.root.getAt(2)).to(be, this.firstLevel[2])
       })
       
-      it("should throw error if no content provided", function(){
-        expect(function(){this.root.getAt()}).to(throwError)
+      it("should return null if no content provided", function(){
+        expect(this.root.getAt()).to(beNull)
       })
       
       it("should return null if child not found", function(){

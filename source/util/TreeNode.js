@@ -1,8 +1,8 @@
 // Constructor
 // Creates a new node
 Inspec.util.TreeNode = function(name, content){
-  if(!name)
-    throw "Node name HAS to be provided";
+  if(name === null || typeof name === "undefined")
+    throw new Error("Node name HAS to be provided");
     
   this._parent = null;
   this._name = name;
@@ -70,8 +70,8 @@ Inspec.util.TreeNode.prototype ={
   // Returns the requested node from the set of immediate children by the name
   // of the child node
   get : function(name){
-    if(!name)
-      throw "Node name HAS to be provided";
+    if(name === null || typeof name === "undefined")
+      return null;
     var index = this._childrenHash[name];
     return this.getAt(index);
   },
@@ -79,8 +79,8 @@ Inspec.util.TreeNode.prototype ={
   // Returns the requested node from the set of immediate children by the
   // position of the child node
   getAt : function(index){
-    if(index==null || typeof index == "undefined")
-      throw "Node index HAS to be provided";
+    if(index === null || typeof index === "undefined")
+      return null;
     return (this._children[index] || null);
   },
   
