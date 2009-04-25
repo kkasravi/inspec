@@ -41,3 +41,11 @@ Inspec.clone = function(a) {
   for(var i in a) rv[i] = a[i];
   return rv;
 }
+
+Inspec.getFunctionContent = function(fn){
+  return fn.toString().match(/^[^\{]*{((.*\n*)*)}/m)[1];
+}
+
+Inspec.createImplementation = function(fnContent){
+  return new Function("dsl", "matchers", "with (dsl){ with(matchers) { " + fnContent + " } }");
+}

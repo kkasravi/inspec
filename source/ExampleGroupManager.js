@@ -28,34 +28,27 @@ Inspec.ExampleGroupManager = Inspec.Class.extend({
     return (this.currentBehavior.get(description) || this.currentBehavior.add(new Inspec.Behavior(description)));
   },
   
-  // Todo: refactor!!!
   solidify : function(implementation){
-    var str = implementation.toString().match(/^[^\{]*{((.*\n*)*)}/m)[1];
+    var implementationContent = Inspec.getFunctionContent(implementation);
     var regex = /itShouldBehaveLike\s*[(]\s*(?:['"])(.*?)(?:['"])\s*[)]\s*;*/m;
-    
-    if(!regex.test(str)) return implementation;
+    if(!regex.test(implementationContent)) return implementation;
 
-    var results = null;
-    
-    while(results = regex.exec(str)){
-      var sharedExampleGroup = this.sharedExampleGroups[results[1]];
+    var results, sharedExampleGroup, match, description, sharedContent;
+    while(results = regex.exec(implementationContent)){
+      match = results[0];
+      description = results[1];
+      sharedExampleGroup = this.sharedExampleGroups[description];
+      
       if(!sharedExampleGroup)
-        throw new Error("Shared Behavior: '" + results[1] + "' not found! Did you include it before this script?");
+        throw new Error("Shared Behavior: '" + description + "' not found! Did you include it before this script?");
 
-      var subStr = sharedExampleGroup.getImplementation().toString();
-      var contents = subStr.match(/^[^\{]*{((.*\n*)*)}/m)[1];
-      str = str.replace(results[0], contents);
+      sharedContent = Inspec.getFunctionContent(sharedExampleGroup.getImplementation());
+      implementationContent = implementationContent.replace(match, sharedContent);
     }
-    str = "with (dsl){ with(matchers) { " + str + " } }";
-    // using "new Function" approach, so the scope chain is empty
-    var fn = new Function("dsl", "matchers", str);
-    // assigning default scope as the global scope
     
-    implementation = function(){
-      fn.call(this, Inspec.options.dsl, Inspec.Matchers);
+    return function(){
+      Inspec.createImplementation(implementationContent).call(this, Inspec.options.dsl, Inspec.Matchers);
     };
-        
-    return implementation;
   },
   
   // initializes an example group. Do nothing if the example group is not
@@ -68,8 +61,10 @@ Inspec.ExampleGroupManager = Inspec.Class.extend({
     
     this.currentBehavior = exampleGroup.getBehavior();
     this.currentExampleGroup = exampleGroup;
+    
     exampleGroup.setImplementation(this.solidify(exampleGroup.getImplementation()));
     exampleGroup.getImplementation().call(exampleGroup.defaultScope);
+    
     this.currentBehavior = exampleGroup.getBehavior().getParent();
     this.currentExampleGroup = exampleGroup.getParent();
   },

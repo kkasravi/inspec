@@ -31,17 +31,9 @@ Inspec.Environment = Inspec.Class.extend({
     this.runner.execute();
   },
   
-  
   load : function(location){
-    var specScript = this.preprocess(this.loadFile(location));
-    // using "new Function" approach, so the scope chain is empty
-    var fn = new Function("dsl", "matchers", specScript);
-    // assigning default scope as the global scope
+    var fn = Inspec.createImplementation(this.loadFile(location));
     fn.call(Inspec.root, Inspec.options.dsl, Inspec.Matchers);
-  },
-  
-  preprocess : function(specScript){
-    return "with (dsl){ with(matchers) { " + specScript + " } }";
   },
   
   reporterClass : function(){
