@@ -1,37 +1,42 @@
-sharedExamplesFor("as a standard matcher",function(){
+sharedExamplesFor("a standard matcher",function(){
+  var passArgs, failArgs
   beforeAll(function(){
-    if(!this.matcher || !this.passArgs || !this.failArgs || !this.errMsg || !this.negativeErrMsg){
-      throw Error("this.matcher, this.passArgs, this.failArgs, this.errMsg, and this.negativeErrMsg must be supplied")
+    if(typeof matcher == 'undefined' || typeof expectedPass== 'undefined' || 
+        typeof expectedFail == 'undefined' || typeof errMsg== 'undefined' ||
+        typeof negativeErrMsg == 'undefined' || typeof actual == 'undefined'){
+      throw Error("matcher, actual, expectedPass, expectedFail, errMsg, and negativeErrMsg must be defined")
     }
+    passArgs = [expectedPass, actual]
+    failArgs = [expectedFail, actual]
   })
   
   describe("#match", function(){
     it("should respond to #match", function(){
-      expect(this.matcher).to(respondTo, 'match')
+      expect(matcher).to(respondTo, 'match')
     })
     
     it("should return true if pass", function(){
-      expect(this.matcher.match.apply(this.matcher, this.passArgs)).to(beTrue)
+      expect(matcher.match.apply(matcher, passArgs)).to(beTrue)
     })
     
     it("should return false if fail", function(){
-      expect(this.matcher.match.apply(this.matcher, this.failArgs)).to(beFalse)
+      expect(matcher.match.apply(matcher, failArgs)).to(beFalse)
     })
   })
   
   describe("#failureMessage", function(){
     it("should respond to #failureMessage", function(){
-      expect(this.matcher).to(respondTo, 'failureMessage')
+      expect(matcher).to(respondTo, 'failureMessage')
     })
 
     it("should return correct message", function(){
-      var msg = this.matcher.failureMessage.apply(this.matcher, this.failArgs)
-      expect(msg).to(eql, this.errMsg)
+      var msg = matcher.failureMessage.apply(matcher, failArgs)
+      expect(msg).to(eql, errMsg)
     })
     
     it("should return correct message with negation", function(){
-      var msg = this.matcher.failureMessage.apply(this.matcher, this.passArgs.concat([true]));
-      expect(msg).to(eql, this.negativeErrMsg)
+      var msg = matcher.failureMessage.apply(matcher, passArgs.concat([true]));
+      expect(msg).to(eql, negativeErrMsg)
     })
   })
 })

@@ -1,16 +1,14 @@
-describe("Equal Matcher", function(){
-  describe("comparing two strings", function(){
-    beforeAll(function(){
-      this.matcher = Inspec.Matchers.equal;
+describe("Matchers", function(){
+  describe("equal", function(){
+    describe("when comparing two strings", function(){
+      var matcher = Inspec.Matchers.equal;
       var actual = "pizza";
       var expectedPass = "pizza";
       var expectedFail = "pie";
-      this.passArgs = [actual, expectedPass]
-      this.failArgs = [actual, expectedFail]
-      this.errMsg = 'expected "pie" to equal "pizza"'
-      this.negativeErrMsg = 'expected "pizza" to not equal "pizza"'
+      var errMsg = 'expected "pizza" to equal "pie"'
+      var negativeErrMsg = 'expected "pizza" to not equal "pizza"'
+
+      itShouldBehaveLike("a standard matcher")
     })
-    
-    itShouldBehaveLike("as a standard matcher")
-  })
+  })  
 })
