@@ -1,13 +1,12 @@
 sharedExamplesFor("a standard matcher",function(){
   var passArgs, failArgs
   beforeAll(function(){
-    if(typeof matcher == 'undefined' || typeof expectedPass== 'undefined' || 
-        typeof expectedFail == 'undefined' || typeof errMsg== 'undefined' ||
-        typeof negativeErrMsg == 'undefined' || typeof actual == 'undefined'){
-      throw Error("matcher, actual, expectedPass, expectedFail, errMsg, and negativeErrMsg must be defined")
+    if(typeof matcher == 'undefined' || typeof errMsg== 'undefined' ||
+        typeof negativeErrMsg == 'undefined'){
+      throw Error("matcher, expected, actualPass, actualFail, errMsg, and negativeErrMsg must be specified")
     }
-    passArgs = [expectedPass, actual]
-    failArgs = [expectedFail, actual]
+    passArgs = [expected, actualPass]
+    failArgs = [expected, actualFail]
   })
   
   describe("#match", function(){

@@ -51,9 +51,11 @@ Inspec.Matchers = {
   
   beEmpty: {
     match: function(expected, actual) {
-      if (actual.length == undefined) throw(new Inspec.ExpectationFailure(actual.toString() + " does not respond to length"));
+      // if loop is started, then actual is not empty
+      for(var index in actual)return false;
       
-      return actual.length == 0;
+      // if actuall is empty, it should go directly here
+      return true;
     },
     
     failureMessage: function(expected, actual, not) {

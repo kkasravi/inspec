@@ -8,8 +8,24 @@
     "unitTest/expectationSpec.js",
     "unitTest/inspecSepc.js",    
     "unitTest/matchers/sharedMatcherSpec.js",
-    "unitTest/matchers/equalMatcherSpec.js",
-    "unitTest/matchers/matchMatcherSpec.js",
+    "unitTest/matchers/beASpec.js",
+    "unitTest/matchers/beEmptySpec.js",
+    "unitTest/matchers/beFalseSpec.js",
+    "unitTest/matchers/beNullSpec.js",
+    "unitTest/matchers/beSpec.js",
+    "unitTest/matchers/beTrueSpec.js",
+    "unitTest/matchers/beUndefinedSpec.js",
+    "unitTest/matchers/eqlSpec.js",
+    "unitTest/matchers/equalSpec.js",
+    "unitTest/matchers/haveLengthSpec.js",
+    "unitTest/matchers/haveSpec.js",
+    "unitTest/matchers/matchSpec.js",
+    "unitTest/matchers/respondToSpec.js",
+    "unitTest/matchers/throwErrorSpec.js",
+
+
+
+
     "unitTest/runerSpec.js",
     "unitTest/dsl/bddSpec.js",
     "unitTest/util/treeNodeSpec.js",
