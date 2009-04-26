@@ -1,4 +1,9 @@
 (function(){
+  // bad bad practice...
+  // but we still need to do this to make sure
+  // Inspec will still run with this.
+  Object.prototype.hell = function(){};
+  
   var unitTestSpecs = [
     "unitTest/classSpec.js",
     "unitTest/exampleGroupManagerSpec.js",

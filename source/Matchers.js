@@ -52,8 +52,9 @@ Inspec.Matchers = {
   beEmpty: {
     match: function(expected, actual) {
       // if loop is started, then actual is not empty
-      for(var index in actual)return false;
-      
+      for(var index in actual){
+        if(!Array.prototype[index]) return false;
+      }
       // if actuall is empty, it should go directly here
       return true;
     },
