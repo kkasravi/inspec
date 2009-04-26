@@ -13,7 +13,7 @@ describe("Inspec.util.Messenger", function(){
 
   describe("member functions", function(){
     beforeEach(function(){
-      this.messageFn = function(message){console.log(message);message.called = true;message.ary.push("first");}
+      this.messageFn = function(message){message.called = true;message.ary.push("first");}
       this.messenger.on("test", this.messageFn, this)      
       this.messageFn2 = function(message){message.called2 = true;message.ary.push("second");}
       this.messenger.on("test", this.messageFn2, this)
