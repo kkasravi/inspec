@@ -9,6 +9,7 @@
     "unitTest/inspecSepc.js",    
     "unitTest/matchers/sharedMatcherSpec.js",
     "unitTest/matchers/equalMatcherSpec.js",
+    "unitTest/matchers/matchMatcherSpec.js",
     "unitTest/runerSpec.js",
     "unitTest/dsl/bddSpec.js",
     "unitTest/util/treeNodeSpec.js",
