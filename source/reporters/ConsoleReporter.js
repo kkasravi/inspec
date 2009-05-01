@@ -30,19 +30,5 @@ Inspec.ConsoleReporter = Inspec.Reporter.extend({
         this.log("Error : " + error);
       }
     }
-  },
-  
-  getExampleGroupDescription : function(exampleGroup){
-    var parent = exampleGroup.getParent();
-    var description = exampleGroup.getDescription();
-    if(parent)
-      description = this.getExampleGroupDescription(parent) + " " + description;
-    return description;
-  },
-  
-  getDescription : function(example){
-    var desc =  this.getExampleGroupDescription(example.exampleGroup)
-      + " " + example.getDescription();
-    return desc;
   }
 });

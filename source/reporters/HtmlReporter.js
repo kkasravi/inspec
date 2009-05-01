@@ -80,22 +80,5 @@ Inspec.HtmlReporter = Inspec.Reporter.extend({
     }
     
     this.viewport.appendChild(result);
-  },
-  
-  getExampleGroupDescription : function(exampleGroup){
-    var parent = exampleGroup.getParent();
-    var behavior = exampleGroup.getBehavior();
-    
-    var description = behavior ? behavior.getDescription() : "";
-    
-    if(parent)
-      description = this.getExampleGroupDescription(parent) + " " + description;
-    return description;
-  },
-  
-  getDescription : function(example){
-    var desc =  this.getExampleGroupDescription(example.exampleGroup)
-      + " " + example.getDescription();
-    return desc;
   }
 });
