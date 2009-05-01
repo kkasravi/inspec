@@ -17,6 +17,23 @@ Inspec.Reporter = Inspec.Class.extend({
     this.messenger.on("endExample", this.onEndExample, this);
   },
   
+  getExampleGroupDescription : function(exampleGroup){
+    var parent = exampleGroup.getParent();
+    var behavior = exampleGroup.getBehavior();
+    
+    var description = behavior ? behavior.getDescription() : "";
+    
+    if(parent)
+      description = this.getExampleGroupDescription(parent) + " " + description;
+    return description;
+  },
+  
+  getDescription : function(example){
+    var desc =  this.getExampleGroupDescription(example.exampleGroup)
+      + " " + example.getDescription();
+    return desc;
+  },
+  
   onStartTest : function(message){
     throw new Inspec.NotImplemented();
   },
