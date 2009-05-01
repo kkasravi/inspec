@@ -541,7 +541,7 @@ describe("Inspec.util.TreeNode", function(){
 
     describe("#remove", function(){
       var doRemove = function(parent, child){
-        rv = {}
+        var rv = {}
         rv.parent = parent
         rv.child = child
         rv.oldLength = parent._children.length
