@@ -39,12 +39,12 @@ Inspec.Runner = Inspec.Class.extend({
       var executionError = null;
       this.messenger.send("beginExampleGroup", {exampleGroup : exampleGroup});
       var scope = exampleGroup.defaultScope;
-      try{
-        this.executeBeforeAll(exampleGroup, scope);
-      }catch(e){
-        executionError = executionError || e;
-      }
-      
+
+      // temporarily taking before all's out of the try catch block.
+      // It should skip the whole implementation if before all fails.
+      this.executeBeforeAll(exampleGroup, scope);
+
+
       this.executeExamples(exampleGroup, scope);
       
       try{
