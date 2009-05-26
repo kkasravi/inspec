@@ -3,9 +3,6 @@ Features / Bugs:
 * Stop executing examples when beforeAll fails, but do not stop test (generate correct error messages)
 * Add statistics functionality to Reporter Class
 * Prioritize object printing with toString() if object has customized toString (shouldn't break existing spec)
-* Extract and improve rendering logic from HTMLReporter to HTMLReporter.FlatFormatter
-* Implement HTMLReporter.NestedFormater
-* Implement HTMLReporter.CompactFormater
 * Implement ConsoleReporter.FlatFormatter
 * Implement ConsoleReporter.NestedFormater
 * Implement ConsoleReporter.CompactFormater
