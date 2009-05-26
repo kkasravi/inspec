@@ -40,6 +40,12 @@ h3. Run Inspec self test
 # cd ~/serverjs/narwhal/packages/inspec
 # inspec
 
+h3. Specing your own
+
+# Make a directory called 'spec'
+# Your spec files should be in spec folder and/or its subfolders
+# Inspec looks for files with name ending with 'Spec.js'. E.g. 'fooSpec.js', 'barSpec.js'
+# type 'inspec' on the parent directory of 'spec' to see test results
 
 h2. Highlights
 
