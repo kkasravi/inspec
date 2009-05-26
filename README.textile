@@ -57,6 +57,19 @@ h2. Sample spec
 Highly suggest you to look at the spec directory for more sample code on specing
 
 <pre><code>
+sharedExamplesFor("a shared example group", function(){
+  it("should work as shared example", function(){
+    expect(true).to(beTrue);
+  })
+
+  describe("with nested example groups in shared", function(){
+    it("should work as a nested example group in shared", function(){
+      expect(true).to(beTrue);
+    })
+  })
+
+})
+
 describe("Inspec", function(){
   it("should work", function(){
     expect(true).to(beTrue);
@@ -78,20 +91,6 @@ describe("Inspec", function(){
     })
   })
 
-  
   itShouldBehaveLike("a shared example group")
-})
-
-sharedExamplesFor("a shared example group", function(){
-  it("should work as shared example", function(){
-    expect(true).to(beTrue);
-  })
-  
-  describe("with nested example groups in shared", function(){
-    it("should work as a nested example group in shared", function(){
-      expect(true).to(beTrue);
-    })
-  })
-  
 })
 </code></pre>
