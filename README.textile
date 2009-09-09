@@ -12,32 +12,42 @@ h2. Installation
 
 h3. Setup your path for narwhal
 
-  cd ~
-  mkdir ~/.bin
-  nano ~/.bash_profile
-  source ~/.bash_profile
+<pre>
+cd ~
+mkdir ~/.bin
+nano ~/.bash_profile
+source ~/.bash_profile
+</pre>
 
 h3. Get narwhal
 
-# cd ~ && mkdir serverjs
-# cd ~/serverjs
-# git clone git://github.com/tlrobinson/narwhal.git
+<pre>
+cd ~ && mkdir serverjs
+cd ~/serverjs
+git clone git://github.com/tlrobinson/narwhal.git
+</pre>
 
 h3. Get Inspec
 
-# cd ~/serverjs/narwal/packages
-# git clone git@github.com:aq1018/inspec.git
+<pre>
+cd ~/serverjs/narwal/packages
+git clone git@github.com:aq1018/inspec.git
+</pre>
 
 h3. Link narwhal and Inspec executables to your bin folder
 
-# cd ~/.bin
-# ln -s ~/serverjs/narwhal/bin/* .
-# ln -s ~/serverjs/narwhal/packages/inspec/bin/* .
+<pre>
+cd ~/.bin
+ln -s ~/serverjs/narwhal/bin/* .
+ln -s ~/serverjs/narwhal/packages/inspec/bin/* .
+</pre>
 
 h3. Run Inspec self test
 
-# cd ~/serverjs/narwhal/packages/inspec
-# inspec
+<pre>
+cd ~/serverjs/narwhal/packages/inspec
+inspec
+</pre>
 
 h3. Specing your own
 
