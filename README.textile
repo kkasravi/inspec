@@ -1,22 +1,21 @@
 h1. Inspec: A JavaScript BDD Test Framework
 
-**Inspec** is a **Javascript BDD** Test Library that aims to be **flexible** and **powerful** yet **clean** and **easy to extend**. Packaged as a 'Narwhal':http://github.com/tlrobinson/narwhal/tree/master Package.
+**Inspec** is a **Javascript BDD** Test Library that aims to be **flexible** and **powerful** yet **clean** and **easy to extend**. Packaged as a "Narwhal":http://github.com/tlrobinson/narwhal/tree/master Package.
 
 h2. Dependencies
 
 You need:
 
-# "Narwhal":http://github.com/tlrobinson/narwhal/tree/master
+"Narwhal":http://github.com/tlrobinson/narwhal/tree/master
 
 h2. Installation
 
 h3. Setup your path for narwhal
 
-# cd ~
-# mkdir ~/.bin
-# nano ~/.bash_profile
-# Make your PATH environment include ~/.bin and save
-# source ~/.bash_profile
+  cd ~
+  mkdir ~/.bin
+  nano ~/.bash_profile
+  source ~/.bash_profile
 
 h3. Get narwhal
 
