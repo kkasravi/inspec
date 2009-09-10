@@ -1,8 +1,9 @@
 {
     "name": "inspec",
-    "version": {
-        "label": "0.1",
-        "numeric": [0,1],
-        "status": "development"
-    }
+    "author": "Aaron Qian (http://aaronqian.com/)",
+    "url" : "http://github.com/aq1018/inspec",
+    "dependencies": ["narwhal"],
+    "license" : "MIT",
+    "description": "BDD test framwork inspired by rspec",
+    "keywords": ["bdd", "tdd", "test framework", "spec"]    
 }
