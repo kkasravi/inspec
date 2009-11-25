@@ -24,6 +24,9 @@ Add the following line at the end of your .bash_profile
 PATH=~/.bin:$PATH
 </pre>
 
+Save your .bash_profile.
+Update your environment variables by running the following in the console:
+
 <pre>
 source ~/.bash_profile
 </pre>
