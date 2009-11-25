@@ -16,6 +16,14 @@ h3. Setup your path for narwhal
 cd ~
 mkdir ~/.bin
 nano ~/.bash_profile
+</pre>
+
+Add the following line at the end of your .bash_profile
+<pre>
+PATH=~/.bin:$PATH
+</pre>
+
+<pre>
 source ~/.bash_profile
 </pre>
 
