@@ -5,8 +5,8 @@ describe("Matchers", function(){
     var actualPass = function(){it.should.not.work._for_.sure};
     var actualFail = function(){};
 
-    var errMsg = 'expected function () to throw error'
-    var negativeErrMsg = 'expected function () to not throw error'
+    var errMsg = 'expected \nfunction () to throw error'
+    var negativeErrMsg = 'expected \nfunction () to not throw error'
 
     itShouldBehaveLike("a standard matcher")      
   })

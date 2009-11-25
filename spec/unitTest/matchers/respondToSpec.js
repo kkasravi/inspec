@@ -6,7 +6,7 @@ describe("Matchers", function(){
     var actualFail = {abc : []};
 
     var errMsg = 'expected { abc: [] } to respond to "abc"'
-    var negativeErrMsg = 'expected { abc: function () } to not respond to "abc"'
+    var negativeErrMsg = 'expected { abc: \nfunction () } to not respond to "abc"'
 
     itShouldBehaveLike("a standard matcher")      
   })
